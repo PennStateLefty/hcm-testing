@@ -356,7 +356,6 @@ paket-files/
 # Cake - Uncomment if you are using it
 #tools/**
 #!tools/packages.config
-
 # Tabs Studio
 *.tss
 
@@ -436,6 +435,9 @@ azure.*.json
 *.appsettings.json
 *.appsettings.*.json
 !appsettings.template.json
+/hcm-testing-api/appsettings.json
+/hcm-testing-api/appsettings.*.json
+!/hcm-testing-api/appsettings.template.json
 secrets.json
 secrets.*.json
 *.db
