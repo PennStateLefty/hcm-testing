@@ -19,7 +19,7 @@ app.MapGet("/documents", async (NpgsqlDataSource dataSource) =>
 {
     await using var conn = await dataSource.OpenConnectionAsync();
     await using var cmd = new NpgsqlCommand(
-        "select id, title, owner, created_at, updated_at from document order by id", conn);
+        "select id, title, owner, createdat, updatedat from document order by id", conn);
     await using var reader = await cmd.ExecuteReaderAsync();
 
     var list = new List<Document>();
@@ -34,7 +34,7 @@ app.MapGet("/documents/{id:int}", async (int id, NpgsqlDataSource dataSource) =>
 {
     await using var conn = await dataSource.OpenConnectionAsync();
     await using var cmd = new NpgsqlCommand(
-        "select id, title, owner, created_at, updated_at from document where id = @id", conn);
+        "select id, title, owner, createdat, updatedat from document where id = @id", conn);
     cmd.Parameters.AddWithValue("id", id);
 
     await using var reader = await cmd.ExecuteReaderAsync();
@@ -54,7 +54,7 @@ app.MapPost("/documents", async (CreateDocumentRequest body, NpgsqlDataSource da
     await using var cmd = new NpgsqlCommand(@"
         insert into document (title, owner)
         values (@title, @owner)
-        returning id, title, owner, created_at, updated_at;", conn);
+        returning id, title, owner, createdat, updatedat;", conn);
     cmd.Parameters.AddWithValue("title", body.Title);
     cmd.Parameters.AddWithValue("owner", body.Owner);
 
@@ -71,9 +71,9 @@ app.MapPut("/documents/{id:int}", async (int id, UpdateDocumentRequest body, Npg
         update document
         set title = @title,
             owner = @owner,
-            updated_at = now()
+            updatedat = now()
         where id = @id
-        returning id, title, owner, created_at, updated_at;", conn);
+        returning id, title, owner, createdat, updatedat;", conn);
     cmd.Parameters.AddWithValue("id", id);
     cmd.Parameters.AddWithValue("title", body.Title);
     cmd.Parameters.AddWithValue("owner", body.Owner);
@@ -106,12 +106,12 @@ static async Task EnsureDatabaseAsync(IServiceProvider services)
     await using var conn = await dataSource.OpenConnectionAsync();
 
     var sql = @"
-        create table if not exists documents (
+        create table if not exists document (
             id serial primary key,
-            title text not null,
-            owner text not null,
-            created_at timestamptz not null default now(),
-            updated_at timestamptz not null default now()
+            title varchar(255) not null,
+            owner varchar(255) not null,
+            createdat timestamp not null default now(),
+            updatedat timestamp not null default now()
         );";
     await using var cmd = new NpgsqlCommand(sql, conn);
     await cmd.ExecuteNonQueryAsync();

@@ -1,6 +1,7 @@
-@hcm_testing_api_HostAddress = http://localhost:5174
+#@hcm_testing_api_HostAddress = http://localhost:5174
+@hcm_testing_api_HostAddress = https://hca-testing-hmgnfcdabkadfac2.canadaeast-01.azurewebsites.net
 
-GET {{hcm_testing_api_HostAddress}}/weatherforecast/
+GET {{hcm_testing_api_HostAddress}}/documents/
 Accept: application/json
 
 ###
